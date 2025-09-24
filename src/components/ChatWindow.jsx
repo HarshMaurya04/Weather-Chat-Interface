@@ -1,5 +1,5 @@
 import { useRef, useEffect } from "react";
-import { History, Sun, CloudRain, Moon, Cloud } from "lucide-react";
+import { History, Sun, CloudRain, Moon, Cloud, Sparkles } from "lucide-react";
 import Message from "./Message";
 import MessageInput from "./MessageInput";
 import LoadingIndicator from "./LoadingIndicator";
@@ -12,6 +12,7 @@ function ChatWindow({
   onToggleSidebar,
   theme,
   toggleTheme,
+  currentTheme
 }) {
   const messagesEndRef = useRef(null);
 
@@ -26,102 +27,116 @@ function ChatWindow({
   };
 
   return (
-    <div className={`flex flex-col h-full rounded-xl shadow-lg border overflow-hidden transition-all duration-300 ${
-      theme === 'dark' 
-        ? 'bg-gray-800 border-gray-700' 
-        : 'bg-white border-gray-200'
-    }`}>
-      {/* Header */}
-      <div className={`px-6 py-4 flex items-center justify-between transition-all duration-300 ${
-        theme === 'dark'
-          ? 'bg-gray-700 text-white'
-          : 'bg-gradient-to-r from-blue-500 to-blue-600 text-white'
-      }`}>
-        <div className="flex items-center space-x-3">
+    <div className={`flex flex-col h-full rounded-2xl overflow-hidden transition-all duration-500 ${currentTheme.background.card} ${currentTheme.border.primary} border ${currentTheme.shadow.lg}`}>
+      {/* Enhanced Header */}
+      <div className={`px-6 py-5 flex items-center justify-between transition-all duration-500 ${currentTheme.background.header} relative overflow-hidden`}>
+        {/* Header background decoration */}
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent" />
+        
+        <div className="flex items-center space-x-4 relative z-10">
           <button
             onClick={onToggleSidebar}
-            className="lg:hidden p-2 hover:bg-white/20 rounded-full transition-colors duration-200"
+            className="lg:hidden p-2.5 hover:bg-white/20 rounded-xl transition-all duration-200 hover:scale-105"
           >
-            <History className="w-5 h-5" />
+            <History className="w-5 h-5 text-white" />
           </button>
-          <div className="bg-white/20 p-2 rounded-full">
-            <Cloud className="w-6 h-6" />
+          
+          <div className="bg-white/20 backdrop-blur-sm p-3 rounded-2xl shadow-lg">
+            <Cloud className="w-7 h-7 text-white" />
           </div>
+          
           <div>
-            <h1 className="font-semibold text-lg">
+            <h1 className="font-semibold text-lg text-white flex items-center gap-2">
               {currentChatTitle || "Weather Assistant"}
+              <Sparkles className="w-4 h-4 text-blue-200" />
             </h1>
-            <p className={`text-sm transition-colors duration-300 ${
-              theme === 'dark' ? 'text-gray-300' : 'text-blue-100'
-            }`}>
-              Ask me about weather anywhere!
+            <p className="text-sm text-blue-100 opacity-90">
+              Your AI-powered weather companion
             </p>
           </div>
         </div>
         
-        {/* Theme Toggle Button */}
+        {/* Enhanced Theme Toggle Button */}
         <button
           onClick={handleThemeToggle}
-          className={`p-2 rounded-full transition-all duration-200 ${
+          className={`relative p-3 rounded-xl transition-all duration-300 hover:scale-110 ${
             theme === 'dark'
-              ? 'hover:bg-gray-600 text-yellow-400'
-              : 'hover:bg-white/20 text-white'
-          }`}
+              ? 'bg-yellow-400/20 hover:bg-yellow-400/30 text-yellow-300 hover:text-yellow-200'
+              : 'bg-white/20 hover:bg-white/30 text-white hover:shadow-lg'
+          } backdrop-blur-sm`}
           title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
         >
-          {theme === "light" ? (
-            <Moon className="w-5 h-5" />
-          ) : (
-            <Sun className="w-5 h-5" />
-          )}
+          <div className="relative">
+            {theme === "light" ? (
+              <Moon className="w-5 h-5" />
+            ) : (
+              <Sun className="w-5 h-5" />
+            )}
+            <div className={`absolute inset-0 rounded-full blur-md opacity-50 ${
+              theme === 'dark' ? 'bg-yellow-300' : 'bg-white'
+            }`} />
+          </div>
         </button>
       </div>
 
-      {/* Messages Area */}
-      <div className={`flex-1 overflow-y-auto p-4 transition-colors duration-300 ${
-        theme === 'dark' ? 'bg-gray-900' : 'bg-gray-50'
-      }`}>
+      {/* Enhanced Messages Area */}
+      <div className={`flex-1 overflow-y-auto p-6 transition-all duration-500 ${currentTheme.background.secondary} relative`}>
+        {/* Subtle pattern overlay */}
+        <div className={`absolute inset-0 opacity-30 ${
+          theme === 'light' 
+            ? 'bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.03)_0%,transparent_50%)]'
+            : 'bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.05)_0%,transparent_50%)]'
+        }`} />
+        
         {messages.length === 0 ? (
-          <div className={`flex flex-col items-center justify-center h-full transition-colors duration-300 ${
-            theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
-          }`}>
-            <CloudRain className={`w-16 h-16 mb-4 transition-colors duration-300 ${
-              theme === 'dark' ? 'text-gray-600' : 'text-gray-300'
-            }`} />
-            <h2 className="text-xl font-medium mb-2">Welcome to Weather Chat!</h2>
-            <p className="text-center text-sm max-w-sm">
-              Ask me about the weather in any city. Try questions like:
+          <div className={`flex flex-col items-center justify-center h-full ${currentTheme.text.muted} relative z-10`}>
+            <div className={`p-6 rounded-full mb-5 ${currentTheme.background.card} ${currentTheme.shadow.md} transition-all duration-500 hover:scale-105`}>
+              <CloudRain className={`w-20 h-20 ${currentTheme.text.accent}`} />
+            </div>
+            
+            <h2 className={`text-2xl font-semibold mb-3 ${currentTheme.text.primary}`}>
+              Welcome to Weather Chat!
+            </h2>
+            
+            <p className={`text-center text-base max-w-lg mb-5 ${currentTheme.text.secondary} leading-relaxed`}>
+              I'm your intelligent weather assistant. Ask me about current conditions, forecasts, or weather patterns anywhere in the world.
             </p>
-            <div className="mt-4 space-y-2 text-sm">
-              <div className={`p-2 rounded-lg border transition-colors duration-300 ${
-                theme === 'dark' 
-                  ? 'bg-gray-800 border-gray-700' 
-                  : 'bg-white border-gray-200'
-              }`}>
-                "What's the weather in London?"
-              </div>
-              <div className={`p-2 rounded-lg border transition-colors duration-300 ${
-                theme === 'dark' 
-                  ? 'bg-gray-800 border-gray-700' 
-                  : 'bg-white border-gray-200'
-              }`}>
-                "Will it rain tomorrow in New York?"
-              </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-2xl">
+              {[
+                { icon: "🌤️", text: "What's the weather in London?" },
+                { icon: "🌧️", text: "Will it rain tomorrow in New York?" },
+                { icon: "🌡️", text: "Temperature trends this week in Tokyo?" },
+                { icon: "⛈️", text: "Storm warnings in my area?" }
+              ].map((example, idx) => (
+                <div 
+                  key={idx}
+                  className={`p-4 rounded-xl border transition-all duration-300 hover:scale-105 cursor-pointer ${currentTheme.background.card} ${currentTheme.border.primary} ${currentTheme.shadow.sm} hover:shadow-md group`}
+                  onClick={() => onSend(example.text)}
+                >
+                  <div className="flex items-center space-x-3">
+                    <span className="text-2xl">{example.icon}</span>
+                    <span className={`text-sm font-medium ${currentTheme.text.secondary} group-hover:${currentTheme.text.primary} transition-colors duration-200`}>
+                      {example.text}
+                    </span>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         ) : (
-          <>
+          <div className="relative z-10">
             {messages.map((msg, idx) => (
-              <Message key={idx} message={msg} theme={theme} />
+              <Message key={idx} message={msg} theme={theme} currentTheme={currentTheme} />
             ))}
-            {loading && <LoadingIndicator theme={theme} />}
-          </>
+            {loading && <LoadingIndicator theme={theme} currentTheme={currentTheme} />}
+          </div>
         )}
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Message Input */}
-      <MessageInput onSend={onSend} disabled={loading} theme={theme} />
+      {/* Enhanced Message Input */}
+      <MessageInput onSend={onSend} disabled={loading} theme={theme} currentTheme={currentTheme} />
     </div>
   );
 }

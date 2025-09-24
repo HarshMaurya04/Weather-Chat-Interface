@@ -10,17 +10,27 @@ export const ToastProvider = () => {
       position="top-right"
       autoClose={2000}
       hideProgressBar={false}
-      newestOnTop
-      closeOnClick
-      pauseOnHover
+      newestOnTop={true}
+      closeOnClick={true}
+      rtl={false}
+      pauseOnFocusLoss={true}
+      draggable={true}
+      pauseOnHover={true}
       theme={theme}
-      toastClassName={() => 
-        theme === 'dark' 
-          ? "relative flex p-6 min-h-10 rounded-md justify-between overflow-hidden cursor-pointer bg-gray-800 text-white border border-gray-600"
-          : "relative flex p-6 min-h-10 rounded-md justify-between overflow-hidden cursor-pointer bg-white text-gray-900 border border-gray-200"
-      }
-      bodyClassName={() => theme === 'dark' ? "flex text-sm font-white font-med block p-3 text-white" : "flex text-sm font-med block p-3"}
-      progressClassName={theme === 'dark' ? "bg-blue-400" : ""}
+      toastClassName={`relative flex items-center p-4 min-h-10 rounded-xl overflow-hidden cursor-pointer backdrop-blur-md border transition-all duration-300 hover:scale-105
+        ${
+          theme === 'dark'
+            ? 'bg-gray-800/95 text-white border-gray-600/60 shadow-lg shadow-black/30'
+            : 'bg-white/95 text-gray-900 border-gray-200/60 shadow-lg shadow-blue-200/20'
+        }`}
+      bodyClassName={`flex text-sm font-medium block p-3 text-left
+        ${theme === 'dark' ? 'text-white' : 'text-gray-900'}
+      `}
+      progressClassName={`${
+        theme === 'dark'
+          ? 'bg-gradient-to-r from-blue-400 to-blue-500'
+          : 'bg-gradient-to-r from-blue-500 to-blue-600'
+      }`}
     />
   );
 };
