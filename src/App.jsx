@@ -1,158 +1,66 @@
-import { useState, useEffect } from "react";
-import ChatHistorySidebar from "./components/ChatHistorySidebar";
-import ChatWindow from "./components/ChatWindow";
-import useWeatherAPI from "./hooks/useWeatherAPI";
-import { generatePDF } from "./utils/generatePDF";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { useState } from 'react';
+import { ThemeProvider, useTheme } from './contexts/ThemeContext';
+import { ToastProvider } from './components/ToastProvider';
+import { useChatManager } from './hooks/useChatManager';
+import { useMessageHandler } from './hooks/useMessageHandler';
+import ChatHistorySidebar from './components/ChatHistorySidebar';
+import ChatWindow from './components/ChatWindow';
 
-function App() {
-  const threadId = "YOUR_COLLEGE_ROLL_NUMBER"; // Replace with actual roll number
-  const [chatHistory, setChatHistory] = useState([]);
-  const [currentChatId, setCurrentChatId] = useState(null);
+function AppContent() {
+  const { theme, toggleTheme } = useTheme();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [messages, setMessages] = useState([]);
 
-  const generateChatTitle = (firstMessage) => {
-    if (!firstMessage) return "New Chat";
-    const words = firstMessage.split(" ").slice(0, 5);
-    return words.join(" ") + (firstMessage.split(" ").length > 5 ? "..." : "");
-  };
+  const {
+    chatHistory,
+    currentChatId,
+    messages,
+    setMessages,
+    createNewChat,
+    selectChat,
+    deleteChat,
+    startNewChat,
+    renameChat,
+    exportChat,
+    getCurrentChatTitle,
+  } = useChatManager();
 
-  const handleNewChunk = (chunk) => {
-    setMessages((prevMessages) => {
-      const lastMessage = prevMessages[prevMessages.length - 1];
-      if (lastMessage && lastMessage.role === "agent") {
-        const updatedMessages = [...prevMessages];
-        updatedMessages[prevMessages.length - 1] = {
-          ...lastMessage,
-          content: lastMessage.content + chunk,
-        };
-        return updatedMessages;
-      }
-      return prevMessages;
-    });
-  };
+  const { handleSend, loading } = useMessageHandler(
+    messages,
+    setMessages,
+    currentChatId,
+    createNewChat
+  );
 
-  const { sendMessage, loading, error } = useWeatherAPI(handleNewChunk);
-
-  const handleSend = async (userMessage) => {
-    const newUserMsg = {
-      role: "user",
-      content: userMessage,
-      timestamp: new Date(),
-    };
-    const currentMessages = [...messages, newUserMsg];
-
-    setMessages([
-      ...currentMessages,
-      { role: "agent", content: "", timestamp: new Date() },
-    ]);
-
-    if (currentChatId === null) {
-      const newChatId = Date.now().toString();
-      const newChat = {
-        id: newChatId,
-        title: generateChatTitle(userMessage),
-        messages: currentMessages,
-        createdAt: new Date(),
-      };
-      setChatHistory((prev) => [newChat, ...prev]);
-      setCurrentChatId(newChatId);
-    }
-
-    const apiMessages = currentMessages.map((m) => ({
-      role: m.role,
-      content: m.content,
-    }));
-    await sendMessage(apiMessages, threadId);
-  };
-
-  useEffect(() => {
-    if (currentChatId && messages.length > 0) {
-      setChatHistory((prev) =>
-        prev.map((chat) =>
-          chat.id === currentChatId
-            ? { ...chat, messages: [...messages] }
-            : chat
-        )
-      );
-    }
-  }, [messages, currentChatId]);
-
+  const handleToggleSidebar = () => setSidebarOpen(!sidebarOpen);
   const handleSelectChat = (chatId) => {
-    const chat = chatHistory.find((c) => c.id === chatId);
-    if (chat) {
-      setCurrentChatId(chatId);
-      setMessages(chat.messages);
-      setSidebarOpen(false);
-    }
+    selectChat(chatId);
+    setSidebarOpen(false);
   };
-
-  const handleDeleteChat = (chatId) => {
-    setChatHistory((prev) => prev.filter((chat) => chat.id !== chatId));
-    if (currentChatId === chatId) {
-      setCurrentChatId(null);
-      setMessages([]);
-    }
-    toast.info("Chat deleted successfully.");
-  };
-
   const handleNewChat = () => {
-    setCurrentChatId(null);
-    setMessages([]);
+    startNewChat();
     setSidebarOpen(false);
   };
 
-  const handleExportChat = (chat) => {
-    try {
-      generatePDF(chat, chat.title);
-      toast.success("PDF downloaded successfully!");
-    } catch (err) {
-      console.error(err);
-      toast.error("Failed to download PDF. Please try again.");
-    }
-  };
-
-  const handleRenameChat = (chatId, newTitle) => {
-    setChatHistory((prev) =>
-      prev.map((chat) =>
-        chat.id === chatId ? { ...chat, title: newTitle } : chat
-      )
-    );
-  };
-
-  const handleToggleSidebar = () => setSidebarOpen(!sidebarOpen);
-
-  const getCurrentChatTitle = () => {
-    if (currentChatId) {
-      const chat = chatHistory.find((c) => c.id === currentChatId);
-      return chat?.title;
-    }
-    return null;
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50">
-      <ToastContainer
-        position="top-right"
-        autoClose={2000}
-        hideProgressBar={false}
-        newestOnTop
-        closeOnClick
-        pauseOnHover
-      />
+    <div className={`min-h-screen transition-all duration-300 ${
+      theme === 'dark' 
+        ? 'bg-gray-900 text-white' 
+        : 'bg-gradient-to-br from-blue-50 via-white to-blue-50 text-gray-900'
+    }`}>
+      <ToastProvider />
+      
       <div className="flex h-screen">
         <ChatHistorySidebar
           chatHistory={chatHistory}
           currentChatId={currentChatId}
           onSelectChat={handleSelectChat}
-          onDeleteChat={handleDeleteChat}
+          onDeleteChat={deleteChat}
           onNewChat={handleNewChat}
-          onExportChat={handleExportChat}
-          onRenameChat={handleRenameChat}
+          onExportChat={exportChat}
+          onRenameChat={renameChat}
           isOpen={sidebarOpen}
           onToggle={handleToggleSidebar}
+          theme={theme}
         />
 
         <div className="flex-1 p-4">
@@ -163,27 +71,21 @@ function App() {
               loading={loading}
               currentChatTitle={getCurrentChatTitle()}
               onToggleSidebar={handleToggleSidebar}
+              theme={theme}
+              toggleTheme={toggleTheme}
             />
-
-            {/* Inline connection error section remains untouched */}
-            {error && (
-              <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
-                <div className="flex items-center space-x-2">
-                  <div className="w-2 h-2 bg-red-500 rounded-full"></div>
-                  <span className="text-red-700 text-sm font-medium">
-                    Connection Error
-                  </span>
-                </div>
-                <p className="text-red-600 text-sm mt-1">{error}</p>
-                <p className="text-red-500 text-xs mt-2">
-                  Please check your internet connection and try again.
-                </p>
-              </div>
-            )}
           </div>
         </div>
       </div>
     </div>
+  );
+}
+
+function App() {
+  return (
+    <ThemeProvider>
+      <AppContent />
+    </ThemeProvider>
   );
 }
 
