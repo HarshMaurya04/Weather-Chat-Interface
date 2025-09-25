@@ -104,10 +104,10 @@ function ChatWindow({
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-2xl">
               {[
-                { icon: "🌤️", text: "What's the weather in London?" },
-                { icon: "🌧️", text: "Will it rain tomorrow in New York?" },
-                { icon: "🌡️", text: "Temperature trends this week in Tokyo?" },
-                { icon: "⛈️", text: "Storm warnings in my area?" }
+                { icon: "🌤️", text: "What’s the weather in Mumbai?" },
+                { icon: "🌧️", text: "Will it rain tomorrow in Delhi?" },
+                { icon: "🌡️", text: "Temperature forecast this week in Bangalore?" },
+                { icon: "🌫️", text: "Air quality in Delhi NCR?" }
               ].map((example, idx) => (
                 <div 
                   key={idx}
