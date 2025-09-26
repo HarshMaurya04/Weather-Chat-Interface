@@ -25,7 +25,7 @@ function AppContent() {
   };
 
   const getCurrentChatTitle = () => {
-    return chatHistory.find(c => c.id === currentChatId)?.title || "New Chat";
+    return chatHistory.find(c => c.id === currentChatId)?.title || "Weather Assistant";
   };
 
   return (

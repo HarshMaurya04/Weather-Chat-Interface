@@ -187,8 +187,8 @@ function ChatHistorySidebar({
                     )}
                   </div>
 
-                  {/* Action Buttons */}
-                  <div className="flex space-x-1 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-2 group-hover:translate-x-0">
+                  {/* Action Buttons - Fixed for mobile */}
+                  <div className="flex space-x-1 opacity-60 md:opacity-0 md:group-hover:opacity-100 transition-all duration-300 transform translate-x-0 md:translate-x-2 md:group-hover:translate-x-0">
                     {editingId !== chat.id && (
                       <button
                         onClick={(e) => {

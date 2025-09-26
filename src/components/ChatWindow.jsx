@@ -4,6 +4,44 @@ import Message from "./Message";
 import MessageInput from "./MessageInput";
 import LoadingIndicator from "./LoadingIndicator";
 
+// Custom scrollbar styles
+const scrollbarStyles = `
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-default {
+    -ms-overflow-style: auto;
+    scrollbar-width: auto;
+  }
+  .scrollbar-default::-webkit-scrollbar {
+    display: block;
+  }
+  @media (max-width: 768px) {
+    .scrollbar-hide {
+      -ms-overflow-style: auto;
+      scrollbar-width: thin;
+    }
+    .scrollbar-hide::-webkit-scrollbar {
+      display: block;
+      width: 6px;
+    }
+    .scrollbar-hide::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .scrollbar-hide::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 3px;
+    }
+    .scrollbar-hide::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+  }
+`;
+
 function ChatWindow({
   messages,
   onSend,
@@ -20,6 +58,14 @@ function ChatWindow({
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
 
+  useEffect(() => {
+    // Inject custom scrollbar styles
+    const styleSheet = document.createElement("style");
+    styleSheet.innerText = scrollbarStyles;
+    document.head.appendChild(styleSheet);
+    return () => document.head.removeChild(styleSheet);
+  }, []);
+
   const handleThemeToggle = () => {
     if (toggleTheme) {
       toggleTheme();
@@ -29,11 +75,11 @@ function ChatWindow({
   return (
     <div className={`flex flex-col h-full rounded-2xl overflow-hidden transition-all duration-500 ${currentTheme.background.card} ${currentTheme.border.primary} border ${currentTheme.shadow.lg}`}>
       {/* Header */}
-      <div className={`px-6 py-5 flex items-center justify-between transition-all duration-500 ${currentTheme.background.header} relative overflow-hidden`}>
+      <div className={`px-4 sm:px-6 py-4 sm:py-5 flex items-center justify-between transition-all duration-500 ${currentTheme.background.header} relative overflow-hidden`}>
         {/* Header background decoration */}
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent" />
         
-        <div className="flex items-center space-x-4 relative z-10">
+        <div className="flex items-center space-x-3 sm:space-x-4 relative z-10">
           <button
             onClick={onToggleSidebar}
             className="lg:hidden p-2.5 hover:bg-white/20 rounded-xl transition-all duration-200 hover:scale-105"
@@ -41,16 +87,16 @@ function ChatWindow({
             <History className="w-5 h-5 text-white" />
           </button>
           
-          <div className="bg-white/20 backdrop-blur-sm p-3 rounded-2xl shadow-lg">
-            <Cloud className="w-7 h-7 text-white" />
+          <div className="bg-white/20 backdrop-blur-sm p-2 sm:p-3 rounded-xl sm:rounded-2xl shadow-lg">
+            <Cloud className="w-5 h-5 sm:w-7 sm:h-7 text-white" />
           </div>
           
           <div>
-            <h1 className="font-semibold text-lg text-white flex items-center gap-2">
+            <h1 className="font-semibold text-base sm:text-lg text-white flex items-center gap-2">
               {currentChatTitle || "Weather Assistant"}
-              <Sparkles className="w-4 h-4 text-blue-200" />
+              <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 text-blue-200" />
             </h1>
-            <p className="text-sm text-blue-100 opacity-90">
+            <p className="text-xs sm:text-sm text-blue-100 opacity-90">
               Your AI-powered weather companion
             </p>
           </div>
@@ -59,7 +105,7 @@ function ChatWindow({
         {/* Theme Toggle Button */}
         <button
           onClick={handleThemeToggle}
-          className={`relative p-3 rounded-xl transition-all duration-300 hover:scale-110 ${
+          className={`relative p-2 sm:p-3 rounded-xl transition-all duration-300 hover:scale-110 ${
             theme === 'dark'
               ? 'bg-yellow-400/20 hover:bg-yellow-400/30 text-yellow-300 hover:text-yellow-200'
               : 'bg-white/20 hover:bg-white/30 text-white hover:shadow-lg'
@@ -68,9 +114,9 @@ function ChatWindow({
         >
           <div className="relative">
             {theme === "light" ? (
-              <Moon className="w-5 h-5" />
+              <Moon className="w-4 h-4 sm:w-5 sm:h-5" />
             ) : (
-              <Sun className="w-5 h-5" />
+              <Sun className="w-4 h-4 sm:w-5 sm:h-5" />
             )}
             <div className={`absolute inset-0 rounded-full blur-md opacity-50 ${
               theme === 'dark' ? 'bg-yellow-300' : 'bg-white'
@@ -80,7 +126,7 @@ function ChatWindow({
       </div>
 
       {/* Messages Area */}
-      <div className={`flex-1 overflow-y-auto p-6 transition-all duration-500 ${currentTheme.background.secondary} relative`}>
+      <div className={`flex-1 overflow-y-auto scrollbar-hide p-4 sm:p-6 transition-all duration-500 ${currentTheme.background.secondary} relative`}>
         {/* Subtle pattern overlay */}
         <div className={`absolute inset-0 opacity-30 ${
           theme === 'light' 
@@ -89,34 +135,34 @@ function ChatWindow({
         }`} />
         
         {messages.length === 0 ? (
-          <div className={`flex flex-col items-center justify-center h-full ${currentTheme.text.muted} relative z-10`}>
-            <div className={`p-6 rounded-full mb-5 ${currentTheme.background.card} ${currentTheme.shadow.md} transition-all duration-500 hover:scale-105`}>
-              <CloudRain className={`w-20 h-20 ${currentTheme.text.accent}`} />
+          <div className={`flex flex-col items-center justify-center h-full ${currentTheme.text.muted} relative z-10 px-2 sm:px-4`}>
+            <div className={`p-3 sm:p-4 md:p-6 rounded-full mb-3 sm:mb-4 md:mb-5 ${currentTheme.background.card} ${currentTheme.shadow.md} transition-all duration-500 hover:scale-105 flex items-center justify-center`}>
+              <CloudRain className={`w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 lg:w-20 lg:h-20 ${currentTheme.text.accent} flex-shrink-0`} />
             </div>
             
-            <h2 className={`text-2xl font-semibold mb-3 ${currentTheme.text.primary}`}>
+            <h2 className={`text-xl sm:text-xl md:text-2xl font-semibold mb-2 sm:mb-3 ${currentTheme.text.primary} text-center`}>
               Welcome to Weather Chat!
             </h2>
             
-            <p className={`text-center text-base max-w-lg mb-5 ${currentTheme.text.secondary} leading-relaxed`}>
+            <p className={`text-center text-sm sm:text-base max-w-lg mb-4 sm:mb-5 ${currentTheme.text.secondary} leading-relaxed px-1 sm:px-2`}>
               I'm your intelligent weather assistant. Ask me about current conditions, forecasts, or weather patterns anywhere in the world.
             </p>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-2xl">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 w-full max-w-2xl">
               {[
-                { icon: "🌤️", text: "What’s the weather in Mumbai?" },
+                { icon: "🌤️", text: "What's the weather in Mumbai?" },
                 { icon: "🌧️", text: "Will it rain tomorrow in Delhi?" },
                 { icon: "🌡️", text: "Temperature forecast this week in Bangalore?" },
                 { icon: "🌫️", text: "Air quality in Delhi NCR?" }
               ].map((example, idx) => (
                 <div 
                   key={idx}
-                  className={`p-4 rounded-xl border transition-all duration-300 hover:scale-105 cursor-pointer ${currentTheme.background.card} ${currentTheme.border.primary} ${currentTheme.shadow.sm} hover:shadow-md group`}
+                  className={`p-3 sm:p-4 rounded-xl border transition-all duration-300 hover:scale-105 cursor-pointer ${currentTheme.background.card} ${currentTheme.border.primary} ${currentTheme.shadow.sm} hover:shadow-md group`}
                   onClick={() => onSend(example.text)}
                 >
-                  <div className="flex items-center space-x-3">
-                    <span className="text-2xl">{example.icon}</span>
-                    <span className={`text-sm font-medium ${currentTheme.text.secondary} group-hover:${currentTheme.text.primary} transition-colors duration-200`}>
+                  <div className="flex items-center space-x-2 sm:space-x-3">
+                    <span className="text-xl sm:text-2xl flex-shrink-0">{example.icon}</span>
+                    <span className={`text-xs sm:text-sm font-medium ${currentTheme.text.secondary} group-hover:${currentTheme.text.primary} transition-colors duration-200 leading-tight`}>
                       {example.text}
                     </span>
                   </div>
