@@ -47,7 +47,7 @@ function ChatHistorySidebar({
         isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
       } w-80 flex flex-col ${currentTheme.background.sidebar} ${currentTheme.border.primary} backdrop-blur-md ${currentTheme.shadow.lg}`}>
         
-        {/* Enhanced Header */}
+        {/* Header */}
         <div className={`p-6 border-b flex items-center justify-between transition-all duration-300 ${currentTheme.border.primary} relative overflow-hidden`}>
           
           {/* Header background decoration */}
@@ -74,9 +74,13 @@ function ChatHistorySidebar({
           </button>
         </div>
 
-        {/* Enhanced Search Bar */}
+        {/* Search Bar */}
         <div className="p-4">
-          <div className={`relative flex items-center space-x-3 p-3 rounded-xl border transition-all duration-300 ${currentTheme.background.input} ${currentTheme.border.primary} focus-within:${currentTheme.border.focus} focus-within:${currentTheme.shadow.md}`}>
+          <div className={`relative flex items-center space-x-3 p-3 rounded-xl border-2 transition-all duration-300 ${
+            theme === 'light' 
+              ? 'bg-gray-50/80 border-gray-200 focus-within:bg-white focus-within:border-blue-400 focus-within:shadow-md' 
+              : 'bg-gray-800/80 border-gray-600 focus-within:bg-gray-700/90 focus-within:border-blue-500 focus-within:shadow-md'
+          } backdrop-blur-sm`}>
             <Search className={`w-4 h-4 ${currentTheme.text.muted}`} />
             <input
               type="text"
@@ -92,7 +96,7 @@ function ChatHistorySidebar({
           </div>
         </div>
 
-        {/* Enhanced New Chat Button */}
+        {/* New Chat Button */}
         <div className="px-4 pb-4">
           <button
             onClick={onNewChat}
@@ -106,7 +110,7 @@ function ChatHistorySidebar({
           </button>
         </div>
 
-        {/* Enhanced Chat List */}
+        {/* Chat List */}
         <div className="flex-1 overflow-y-auto px-4 pt-1 pb-4 space-y-3">
           {filteredChats.length === 0 ? (
             <div className={`text-center py-12 ${currentTheme.text.muted}`}>
@@ -183,7 +187,7 @@ function ChatHistorySidebar({
                     )}
                   </div>
 
-                  {/* Enhanced Action Buttons */}
+                  {/* Action Buttons */}
                   <div className="flex space-x-1 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-2 group-hover:translate-x-0">
                     {editingId !== chat.id && (
                       <button
@@ -226,7 +230,7 @@ function ChatHistorySidebar({
           )}
         </div>
 
-        {/* Enhanced Footer */}
+        {/* Footer */}
         <div className={`p-4 border-t ${currentTheme.border.primary} ${currentTheme.background.card}`}>
           <div className={`text-center text-xs ${currentTheme.text.muted} space-y-1`}>
             <p>Weather Chat Assistant</p>

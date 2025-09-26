@@ -1,44 +1,31 @@
 import { useState } from 'react';
-import { ThemeProvider, useTheme } from './contexts/ThemeContext';
-import { ToastProvider } from './components/ToastProvider';
-import { useChatManager } from './hooks/useChatManager';
-import { useMessageHandler } from './hooks/useMessageHandler';
-import ChatHistorySidebar from './components/ChatHistorySidebar';
-import ChatWindow from './components/ChatWindow';
+import { ThemeProvider, useTheme } from './contexts/ThemeContext.jsx';
+import { ToastProvider } from './components/ToastProvider.jsx';
+import { useChatStore, useChatActions } from './store/chatStore.js';
+import ChatHistorySidebar from './components/ChatHistorySidebar.jsx';
+import ChatWindow from './components/ChatWindow.jsx';
 
 function AppContent() {
   const { theme, toggleTheme, currentTheme } = useTheme();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const {
-    chatHistory,
-    currentChatId,
-    messages,
-    setMessages,
-    createNewChat,
-    selectChat,
-    deleteChat,
-    startNewChat,
-    renameChat,
-    exportChat,
-    getCurrentChatTitle,
-  } = useChatManager();
-
-  const { handleSend, loading } = useMessageHandler(
-    messages,
-    setMessages,
-    currentChatId,
-    createNewChat
-  );
+  const { chatHistory, currentChatId, messages, loading } = useChatStore();
+  const { selectChat, deleteChat, startNewChat, renameChat, exportChat, sendMessage } = useChatActions();
 
   const handleToggleSidebar = () => setSidebarOpen(!sidebarOpen);
+  
   const handleSelectChat = (chatId) => {
     selectChat(chatId);
     setSidebarOpen(false);
   };
+  
   const handleNewChat = () => {
     startNewChat();
     setSidebarOpen(false);
+  };
+
+  const getCurrentChatTitle = () => {
+    return chatHistory.find(c => c.id === currentChatId)?.title || "New Chat";
   };
 
   return (
@@ -66,7 +53,7 @@ function AppContent() {
           onSelectChat={handleSelectChat}
           onDeleteChat={deleteChat}
           onNewChat={handleNewChat}
-          onExportChat={exportChat}
+          onExportChat={(chat) => exportChat(chat.id)}
           onRenameChat={renameChat}
           isOpen={sidebarOpen}
           onToggle={handleToggleSidebar}
@@ -78,7 +65,7 @@ function AppContent() {
           <div className="h-full max-w-4xl mx-auto">
             <ChatWindow
               messages={messages}
-              onSend={handleSend}
+              onSend={sendMessage}
               loading={loading}
               currentChatTitle={getCurrentChatTitle()}
               onToggleSidebar={handleToggleSidebar}

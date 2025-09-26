@@ -10,7 +10,7 @@ export const useTheme = () => {
   return context;
 };
 
-// Enhanced theme configuration
+// theme configuration
 export const themes = {
   light: {
     name: 'light',

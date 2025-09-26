@@ -1,1 +1,12 @@
 @import "tailwindcss";
+
+@layer base {
+  body {
+    @apply font-sans antialiased;
+  }
+}
+
+@keyframes loading-bar {
+  0%, 100% { width: 20%; }
+  50% { width: 80%; }
+}

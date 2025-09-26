@@ -4,9 +4,20 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
-  darkMode: 'class', 
+  darkMode: 'class',
   theme: {
-    extend: {},
+    extend: {
+      animation: {
+        'bounce-slow': 'bounce 2s infinite',
+        'loading-bar': 'loading-bar 2s ease-in-out infinite',
+      },
+      keyframes: {
+        'loading-bar': {
+          '0%, 100%': { width: '20%' },
+          '50%': { width: '80%' },
+        },
+      },
+    },
   },
   plugins: [],
 }

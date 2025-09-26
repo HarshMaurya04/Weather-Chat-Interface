@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Send, Mic, Paperclip } from "lucide-react";
+import { Send } from "lucide-react";
 
 function MessageInput({ onSend, disabled, theme, currentTheme }) {
   const [text, setText] = useState("");

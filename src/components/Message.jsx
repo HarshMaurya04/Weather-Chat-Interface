@@ -7,7 +7,7 @@ function Message({ message, theme, currentTheme }) {
 
   return (
     <div className={`flex mb-6 ${isUser ? "justify-end" : "justify-start"} group`}>
-      <div className={`max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-2xl break-words ${
+      <div className={`max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-2xl ${
         isUser ? "order-2" : "order-1"
       } flex ${isUser ? "flex-row-reverse" : "flex-row"} items-start space-x-3 ${isUser ? "space-x-reverse" : ""}`}>
         
@@ -57,7 +57,7 @@ function Message({ message, theme, currentTheme }) {
             } opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
             
             <div className="relative z-10">
-              <div className="whitespace-pre-wrap text-sm leading-relaxed font-medium">
+              <div className="whitespace-pre-wrap break-words text-sm leading-relaxed font-medium">
                 {message.content}
               </div>
               

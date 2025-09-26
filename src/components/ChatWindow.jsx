@@ -28,7 +28,7 @@ function ChatWindow({
 
   return (
     <div className={`flex flex-col h-full rounded-2xl overflow-hidden transition-all duration-500 ${currentTheme.background.card} ${currentTheme.border.primary} border ${currentTheme.shadow.lg}`}>
-      {/* Enhanced Header */}
+      {/* Header */}
       <div className={`px-6 py-5 flex items-center justify-between transition-all duration-500 ${currentTheme.background.header} relative overflow-hidden`}>
         {/* Header background decoration */}
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent" />
@@ -56,7 +56,7 @@ function ChatWindow({
           </div>
         </div>
         
-        {/* Enhanced Theme Toggle Button */}
+        {/* Theme Toggle Button */}
         <button
           onClick={handleThemeToggle}
           className={`relative p-3 rounded-xl transition-all duration-300 hover:scale-110 ${
@@ -79,7 +79,7 @@ function ChatWindow({
         </button>
       </div>
 
-      {/* Enhanced Messages Area */}
+      {/* Messages Area */}
       <div className={`flex-1 overflow-y-auto p-6 transition-all duration-500 ${currentTheme.background.secondary} relative`}>
         {/* Subtle pattern overlay */}
         <div className={`absolute inset-0 opacity-30 ${
@@ -135,7 +135,7 @@ function ChatWindow({
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Enhanced Message Input */}
+      {/* Message Input */}
       <MessageInput onSend={onSend} disabled={loading} theme={theme} currentTheme={currentTheme} />
     </div>
   );
